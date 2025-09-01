@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { Users2, PiggyBank,Menu, X, User } from 'lucide-react';
+import { PiggyBank, Menu, X, User, Pencil, Trash2, Check, X as XIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useConversationsStore, useCurrentConversationStore } from '@/app/atom';
 import { useRouter } from 'next/navigation';
@@ -13,9 +13,47 @@ import {createConversation} from '@/helpers/conversation';
 
 
 
-export function Sidebar({user}: {user: any}) {
+import { deleteConversation, updateConversationTitle } from '@/helpers/conversation';
+import type { Conversation } from '@/app/atom';
+
+type SidebarProps = {
+  user: {
+    userId: number;
+    name?: string;
+  };
+};
+
+export function Sidebar({user}: SidebarProps) {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editTitle, setEditTitle] = useState("");
+  // Handle rename
+  const handleRenameConversation = async (conv: Conversation) => {
+    if (!editTitle.trim()) return;
+    try {
+      const updated = await updateConversationTitle({ conversationId: conv.id, title: editTitle });
+      setConversations(conversations.map(c => c.id === conv.id ? updated : c));
+      setEditingId(null);
+    } catch {
+      alert("Failed to rename conversation");
+    }
+  };
+
+  // Handle delete
+  const handleDeleteConversation = async (conv: Conversation) => {
+    if (!window.confirm("Delete this conversation?")) return;
+    try {
+      await deleteConversation({ conversationId: conv.id });
+      setConversations(conversations.filter(c => c.id !== conv.id));
+      if (conv.id === useCurrentConversationStore.getState().currentConversation?.id) {
+        setCurrentConversation(null);
+        router.push("/dashboard/chat");
+      }
+    } catch {
+      alert("Failed to delete conversation");
+    }
+  };
   const router = useRouter();
   // Get raw conversations from Zustand, then sort outside selector to avoid infinite loop
   const rawConversations = useConversationsStore(state => state.conversations);
@@ -27,7 +65,7 @@ export function Sidebar({user}: {user: any}) {
   const setConversations = useConversationsStore(state => state.setConversations);
   const setCurrentConversation = useCurrentConversationStore(state => state.setCurrentConversation);
 
-  const handleSelectConversation = (conv: any) => {
+  const handleSelectConversation = (conv: Conversation) => {
     setCurrentConversation(conv);
     setIsMobileMenuOpen(false);
     router.push(`/dashboard/chat?id=${conv.id}`);
@@ -77,7 +115,7 @@ export function Sidebar({user}: {user: any}) {
                 <span className="text-sm uppercase tracking-wide">Conversations</span>
                 <button
                   onClick={handleCreateConversation}
-                  className="text-xs bg-[#2D2D2D] px-2 py-1 rounded hover:bg-[#3A3A3A]"
+                  className="text-xs bg-[#2D2D2D] px-2 cursor-pointer py-1 rounded hover:bg-[#3A3A3A]"
                 >
                   + New
                 </button>
@@ -89,13 +127,54 @@ export function Sidebar({user}: {user: any}) {
                   conversations.map((c) => (
                     <div
                       key={c.id}
-                      onClick={() => handleSelectConversation(c)}
                       className={cn(
-                        'cursor-pointer px-2 py-1 rounded text-[#E0E0E0] hover:bg-[#2D2D2D] transition-colors',
+                        'group flex items-center px-2 py-1 rounded text-[#E0E0E0] hover:bg-[#2D2D2D] transition-colors',
                         c.id === useCurrentConversationStore.getState().currentConversation?.id && 'bg-[#2D2D2D] font-semibold'
                       )}
                     >
-                      {c.title || `Conversation ${c.id}`}
+                      {editingId === c.id ? (
+                        <>
+                          <input
+                            className="bg-[#232323] text-[#E0E0E0] rounded px-2 py-1 w-2/3 mr-2 outline-none border border-[#444]"
+                            value={editTitle}
+                            autoFocus
+                            onChange={e => setEditTitle(e.target.value)}
+                            onKeyDown={e => {
+                              if (e.key === "Enter") handleRenameConversation(c);
+                              if (e.key === "Escape") setEditingId(null);
+                            }}
+                          />
+                          <button className="mr-1" onClick={() => handleRenameConversation(c)} title="Save">
+                            <Check size={18} />
+                          </button>
+                          <button onClick={() => setEditingId(null)} title="Cancel">
+                            <XIcon size={18} />
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <span
+                            className="flex-1 truncate cursor-pointer"
+                            onClick={() => handleSelectConversation(c)}
+                          >
+                            {c.title || `Conversation ${c.id}`}
+                          </span>
+                          <button
+                            className="ml-2 opacity-0 cursor-pointer group-hover:opacity-100 transition-opacity"
+                            onClick={() => { setEditingId(c.id); setEditTitle(c.title || ""); }}
+                            title="Rename"
+                          >
+                            <Pencil size={16} />
+                          </button>
+                          <button
+                            className="ml-1 opacity-0 cursor-pointer group-hover:opacity-100 transition-opacity text-red-400 hover:text-red-600"
+                            onClick={() => handleDeleteConversation(c)}
+                            title="Delete"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </>
+                      )}
                     </div>
                   ))
                 )}

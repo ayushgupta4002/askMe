@@ -65,3 +65,24 @@ export async function createConversation({ userId}: {userId: number}){
 }
 
 
+export async function updateConversationTitle({conversationId, title}: {conversationId: number, title: string}){
+    const conversation = await prisma.conversation.update({
+        where: {
+            id: conversationId
+        },
+        data: {
+            title: title
+        }
+    });
+    return conversation;
+}
+
+
+export async function deleteConversation({conversationId}: {conversationId: number}){
+    const conversation = await prisma.conversation.delete({
+        where: {
+            id: conversationId
+        }
+    });
+    return conversation;
+}

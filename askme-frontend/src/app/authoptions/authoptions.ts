@@ -117,7 +117,7 @@ export const authOptions: AuthOptions = {
           // in case new user is signing up
           if (!userExist) {
             if (name && email) {
-              await createUser({ name, email });
+              await createUser({ name, email, image: image || undefined });
             } else {
               throw new Error("Name or email is missing");
             }

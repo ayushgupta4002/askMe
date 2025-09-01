@@ -19,6 +19,7 @@ model User {
   id            Int         @id @default(autoincrement())
   name          String?
   email         String?        @unique
+  avatar        String?
   conversations Conversation[]
   createdAt     DateTime       @default(now())
 }
@@ -26,17 +27,18 @@ model User {
 model Conversation {
   id        Int       @id @default(autoincrement())
   title     String?
-  user      User       @relation(fields: [userId], references: [id])
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int
   messages  Message[]
   metadata  Json?
+  nameChanged Boolean? @default(false)
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 }
 
 model Message {
   id             String       @id @default(uuid())
-  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   conversationId Int
   role           Role
   content        String

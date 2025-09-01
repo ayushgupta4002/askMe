@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
-import { Twitter, Linkedin, Github, MessageSquare, User, Loader2, Send, Mic, ArrowLeft } from 'lucide-react';
+import { Twitter, Linkedin, Github, MessageSquare, User, Loader2, Send, Mic,ImageUp, ArrowLeft } from 'lucide-react';
 import Suggestions from './components/Suggestions';
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import { useSession } from "next-auth/react";
@@ -449,8 +449,8 @@ function App() {
                                       <span className="text-sm font-semibold text-blue-300">
                                         📝 Step-by-step response
                                       </span>
-                                      <span className="text-xs text-blue-400 bg-blue-800/50 px-2 py-1 rounded-full">
-                                        {parsed.steps.length} steps
+                                      <span className="text-sm text-blue-400 bg-blue-800/50 px-2 py-1 rounded-full">
+                                        {parsed.steps.length} stepwise
                                       </span>
                                     </div>
                                     <div className="space-y-3">
@@ -594,7 +594,7 @@ function App() {
                         : 'bg-[#2D2D2D] text-gray-400 hover:bg-[#3A3A3A]'
                     }`}
                   >
-                    📝 Steps
+                    📝 Stepwise Mode
                   </button>
                   <button
                     onClick={() => setIsAudioMode(true)}
@@ -639,7 +639,7 @@ function App() {
                   }}
                 />
                 <label htmlFor="image-upload-input" className="absolute top-2 right-14 p-2 rounded-lg hover:bg-[#2D2D2D] transition-colors cursor-pointer" style={{ zIndex: 1 }}>
-                  <span role="img" aria-label="Upload Image">🖼️</span>
+                  <span role="img" aria-label="Upload Image"><ImageUp/></span>
                 </label>
                 <button
                   onClick={() => handleSend()}
