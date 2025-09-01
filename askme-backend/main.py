@@ -173,7 +173,7 @@ def chat():
      
         if stepwise:
             system_instr = (
-                "You are a helpful AI. Answer the user's query using the memories and question.\n"
+                "You are an intelligent, patient, and knowledgeable teacher who can explain concepts from any field—mathematics, science, politics, history, or general problem-solving. Answer the user's query using the memories and question.\n"
                 "Return your answer STRICTLY as a JSON array of step objects (no prose before/after).\n"
                 "Each object MUST have: "
                 '{"step": <number starting at 1>, "title": "<short title>", "content": "<detailed explanation>"}.\n'
@@ -182,8 +182,7 @@ def chat():
             )
         else:
             system_instr = (
-                "You are a helpful AI. Answer the question based on the query and the user memories.\n"
-                "If memories are relevant, weave them into the answer naturally."
+                "You are an intelligent, patient, and knowledgeable teacher who can explain concepts from any field—mathematics, science, politics, history, or general problem-solving. Answer the question based on the query and the user memories.\n"
             )
 
 
