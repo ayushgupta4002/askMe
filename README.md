@@ -58,7 +58,7 @@ askme-main/
 ### 2. Clone & Install
 
 ```bash
-git clone https://github.com/<your-org>/askMe.in.git
+git clone https://github.com/ayushgupta4002/askMe.git
 cd askMe.in
 ```
 

@@ -6,6 +6,7 @@ from livekit.agents import AgentSession, Agent, RoomInputOptions
 from livekit.plugins import (
     google,
     noise_cancellation,
+    silero,
 )
 from prompts import AGENT_INSTRUCTION, SESSION_INSTRUCTION
 from livekit.plugins import sarvam
@@ -14,19 +15,24 @@ from livekit.plugins import sarvam
 
 load_dotenv()
 
-
 class Assistant(Agent):
     def __init__(self) -> None:
         super().__init__(
             instructions=AGENT_INSTRUCTION,
+            vad=silero.VAD.load(),
             stt=sarvam.STT(
                 language="hi-IN",
                 model="saarika:v2.5",
                 api_key=os.getenv("SARVAM_API_KEY"),
             ),
-            llm=google.beta.realtime.RealtimeModel(
-                voice="kore",
-                temperature=0.7,
+            llm=google.LLM(
+                model="gemini-2.0-flash-exp",
+                temperature=0.8,
+            ),
+            tts = google.beta.GeminiTTS(
+                model="gemini-2.5-flash-preview-tts",
+                voice_name="Zephyr",
+                instructions="Speak in a teacher like engaging and professional tone.",
             ),
             # tools=[
             #     get_slackmsg,

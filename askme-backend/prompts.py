@@ -31,5 +31,5 @@ You are an intelligent, patient, and knowledgeable teacher who can explain conce
 SESSION_INSTRUCTION = """
     # Task
     Provide assistance by using the tools that you have access to when needed.
-    Begin the conversation by saying: " Hi Sir, how may I help you? "
+    Begin the conversation by saying: "Hi, how may I help you? "
 """

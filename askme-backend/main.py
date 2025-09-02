@@ -22,7 +22,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 # Initialize Gemini LLM
 llm = ChatGoogleGenerativeAI(
-    model="gemini-1.5-flash",
+    model="gemini-2.5-flash",
     google_api_key=os.getenv("GOOGLE_API_KEY")
 )
 os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
@@ -39,11 +39,12 @@ config = {
     },
     "vector_store": {
         "provider": "qdrant",
-        "config": {
+           "config": {
             "path": "C:/Users/ayush/askme_qdrant_v1",  # Fresh path
             "collection_name": "memories",
             "embedding_model_dims": 768
         }
+
     },
     "embedder": {
         "provider": "gemini",
@@ -187,14 +188,27 @@ def chat():
 
 
         if context_step:
-            base_text = (
-                f"The user previously received a stepwise breakdown. "
-                f"Now they are asking a follow-up related to this step:\n\n"
-                f"Step {context_step.get('step')}: {context_step.get('title')}\n"
-                f"{context_step.get('content')}\n\n"
-                f"User question: {message}\n\n"
-                f"Answer concisely, focusing only on this step."
-            )
+            # If context_step is a list, summarize all steps
+            if isinstance(context_step, list):
+                steps_summary = "\n".join(
+                    f"Step {step.get('step')}: {step.get('title')}\n{step.get('content')}" for step in context_step
+                )
+                base_text = (
+                    f"The user previously received a stepwise breakdown. "
+                    f"Now they are asking a follow-up related to these steps:\n\n"
+                    f"{steps_summary}\n\n"
+                    f"User question: {message}\n\n"
+                    f"Answer concisely, focusing only on the provided steps."
+                )
+            else:
+                base_text = (
+                    f"The user previously received a stepwise breakdown. "
+                    f"Now they are asking a follow-up related to this step:\n\n"
+                    f"Step {context_step.get('step')}: {context_step.get('title')}\n"
+                    f"{context_step.get('content')}\n\n"
+                    f"User question: {message}\n\n"
+                    f"Answer concisely, focusing only on this step."
+                )
         else:
             base_text = (
                 f"{system_instr}\n\n"
