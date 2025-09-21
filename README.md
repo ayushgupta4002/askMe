@@ -2,6 +2,16 @@
 
 askMe.in is a full-stack, AI-powered Q&A platform that lets learners quickly clear their doubts through live interaction, text, and audio. It is built with a modern TypeScript/Next.js frontend and a Python backend that orchestrates LLM responses and real-time media. The project is split into two workspaces (`askme-frontend` and `askme-backend`) with a shared `storage` bucket for static assets.
 
+<img width="1886" height="909" alt="Screenshot 2025-09-02 004315" src="https://github.com/user-attachments/assets/886ba199-d903-41d5-af44-48964eb8c9ce" />
+
+<img width="1897" height="841" alt="Screenshot 2025-09-01 190214" src="https://github.com/user-attachments/assets/c1a70a27-b59d-4986-976b-5362eb30be6e" />
+
+Live Voice Based Interaction
+
+<img width="1865" height="880" alt="Screenshot 2025-09-01 190445" src="https://github.com/user-attachments/assets/156b7018-f885-4f43-a2dd-63af0eac831c" />
+
+<img width="1909" height="898" alt="Screenshot 2025-09-01 185410" src="https://github.com/user-attachments/assets/aee4bb3b-87ee-4e48-a87f-526021d38d59" />
+
 ---
 
 ## ✨ Key Features
